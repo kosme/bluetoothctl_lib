@@ -48,13 +48,13 @@ class Bluetoothctl:
         if start_failed:
             raise BluetoothctlError("Bluetoothctl failed after running " + command)
 
-        return self.child.before.split("\r\n")
+        return self.child.before.split(b"\r\n")
 
     def start_scan(self):
         """Start bluetooth scanning process."""
         try:
             out = self.get_output("scan on")
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
 
@@ -62,24 +62,24 @@ class Bluetoothctl:
         """Make device discoverable."""
         try:
             out = self.get_output("discoverable on")
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
 
     def parse_device_info(self, info_string):
         """Parse a string corresponding to a device."""
         device = {}
-        block_list = ["[\x1b[0;", "removed"]
+        block_list = [b"[\x1b[0;", b"removed"]
         string_valid = not any(keyword in info_string for keyword in block_list)
 
         if string_valid:
             try:
-                device_position = info_string.index("Device")
+                device_position = info_string.index(b"Device")
             except ValueError:
                 pass
             else:
                 if device_position > -1:
-                    attribute_list = info_string[device_position:].split(" ", 2)
+                    attribute_list = info_string[device_position:].split(b" ", 2)
                     device = {
                         "mac_address": attribute_list[1],
                         "name": attribute_list[2]
@@ -91,7 +91,7 @@ class Bluetoothctl:
         """Return a list of tuples of paired and discoverable devices."""
         try:
             out = self.get_output("devices")
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
@@ -107,7 +107,7 @@ class Bluetoothctl:
         """Return a list of tuples of paired devices."""
         try:
             out = self.get_output("paired-devices")
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
@@ -130,7 +130,7 @@ class Bluetoothctl:
         """Get device info by mac address."""
         try:
             out = self.get_output("info " + mac_address)
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
@@ -140,7 +140,7 @@ class Bluetoothctl:
         """Try to pair with a device by mac address."""
         try:
             out = self.get_output("pair " + mac_address, 4)
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
@@ -152,7 +152,7 @@ class Bluetoothctl:
         """Remove paired device by mac address, return success of the operation."""
         try:
             out = self.get_output("remove " + mac_address, 3)
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
@@ -164,7 +164,7 @@ class Bluetoothctl:
         """Try to connect to a device by mac address."""
         try:
             out = self.get_output("connect " + mac_address, 2)
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
@@ -176,7 +176,7 @@ class Bluetoothctl:
         """Try to disconnect to a device by mac address."""
         try:
             out = self.get_output("disconnect " + mac_address, 2)
-        except BluetoothctlError, e:
+        except BluetoothctlError as e:
             print(e)
             return None
         else:
