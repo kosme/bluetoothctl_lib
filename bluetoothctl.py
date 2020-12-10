@@ -58,6 +58,14 @@ class Bluetoothctl:
             print(e)
             return None
 
+    def stop_scan(self):
+        """Stop bluetooth scanning process."""
+        try:
+            out = self.get_output("scan off")
+        except BluetoothctlError as e:
+            print(e)
+            return None
+
     def make_discoverable(self):
         """Make device discoverable."""
         try:
@@ -196,4 +204,5 @@ if __name__ == "__main__":
         print(i)
         time.sleep(1)
 
+    bl.stop_scan()
     print(bl.get_discoverable_devices())
